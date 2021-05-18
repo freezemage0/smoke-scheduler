@@ -14,6 +14,11 @@
     "ext-sockets": "*",
     "ext-pcntl": "*",
     "freezemage0/config": "^2",
-    "ext-json": "*"
+    "ext-json": "*",
+    "phing/phing": "*"
+  },
+  "scripts": {
+    "build-phar": "php vendor/bin/phing -f build.xml",
+    "move-phar": "mkdir -p /var/lib/smoke-scheduler/ && cp build/main.phar /var/lib/smoke-scheduler/"
   }
 }
