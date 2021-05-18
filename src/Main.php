@@ -24,12 +24,14 @@ class Main {
         $argument = $parser->getArgument();
 
         $factory = new ConfigFactory();
-        $config = $factory->create(__DIR__ . '/config.json');
+        $directory = dirname(__DIR__);
+        $config = $factory->create($directory . '/config.json');
 
         if ($argument->getName() == '--daemonize') {
             $application = new Daemon($config);
         } else {
             $application = new Cli($config);
+            $application->setArgument($argument);
         }
 
         $application->bootstrap();

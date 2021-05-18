@@ -14,12 +14,11 @@ class Cli extends SchedulerApplication {
     protected $input;
 
     public function bootstrap(): void {
-        $input = substr($this->argument->getName(), 2);
-        if (!empty($this->argument->getValue())) {
-            $input .= ' ' . $this->argument->getValue();
-        }
-
-        $this->input = $input;
+        $input = array(
+                'command' => $this->argument->getName(),
+                'argument' => $this->argument->getValue()
+        );
+        $this->input = json_encode($input);
     }
 
     public function setArgument(Argument $argument): void {
@@ -30,16 +29,14 @@ class Cli extends SchedulerApplication {
         $socket = Socket::create(AF_UNIX, SOCK_STREAM, 0)
             ->bind($this->config->get('connection.clientName'))
             ->connect($this->config->get('connection.serverName'));
-
-        $input = substr($this->argument->getName(), 2);
-        if (!empty($this->argument->getValue())) {
-            $input .= ' ' . $this->argument->getValue();
-        }
-
-        $socket->write($input);
+        
+        $socket->write($this->input);
         $response = $socket->read($this->config->get('server.bufferSize'));
 
         echo $response;
+        $socket->close();
+        unlink($this->config->get('connection.clientName'));
+        
         exit(0);
     }
 }

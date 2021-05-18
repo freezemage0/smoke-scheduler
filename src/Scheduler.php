@@ -45,19 +45,23 @@ class Scheduler {
     }
 
     public function update(): void {
+        if ($this->timeLeft() <= 0) {
+            $this->stop();
+        }
+        
         if ($this->isRunning()) {
             $this->timeUntil -= 1;
         }
-
+    
         $queue = new SplQueue();
-
+    
         while (!$this->subscribers->isEmpty()) {
             /** @var ScheduleObserver $subscriber */
             $subscriber = $this->subscribers->dequeue();
             $subscriber->notify($this);
             $queue->enqueue($subscriber);
         }
-
+    
         $this->subscribers = $queue;
     }
 

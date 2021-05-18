@@ -33,7 +33,8 @@ class Daemon extends SchedulerApplication {
                 $this->config->get('server.address'),
                 $this->config->get('server.port')
             ),
-            $scheduler
+            $scheduler,
+            $this->config
         ));
 
         $server->addListener(new CliListener(

@@ -85,7 +85,7 @@ class Socket {
         $this->checkResource();
         $result = socket_read($this->resource, $length);
 
-        if ($result === false) {
+        if ($result === false && socket_last_error() != SOCKET_EAGAIN) {
             $this->checkError();
         }
 

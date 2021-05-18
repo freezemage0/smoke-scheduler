@@ -28,29 +28,29 @@ class CliListener implements ListenerInterface {
             return;
         }
 
-        $arguments = explode(' ', $data);
-        $command = array_shift($arguments);
-        $response = $this->processCommand($command, $arguments);
-
-        $client->write($response);
+        $input = json_decode($data, true);
+        $response = $this->processCommand($input);
+        $client->write($response . PHP_EOL);
     }
 
-    protected function processCommand(string $command, array $arguments): string {
+    protected function processCommand(array $input): string {
+        $command = $input['command'] ?? null;
+        $argument = $input['argument'] ?? null;
+        
         switch ($command) {
-            case 'start':
-                $timer = array_shift($arguments);
-                if (!is_numeric($timer) || $timer < 1) {
-                    $timer = 3600;
+            case '--start':
+                if (!is_numeric($argument) || $argument < 1) {
+                    $argument = 3600;
                 }
-                $this->scheduler->start($timer);
-                return sprintf('Scheduled waiting for %s seconds.', $timer);
-            case 'stop':
+                $this->scheduler->start($argument);
+                return sprintf('Scheduled waiting for %s seconds.', $argument);
+            case '--stop':
                 $this->scheduler->stop();
                 return 'Timer stopped';
-            case 'pause':
+            case '--pause':
                 $this->scheduler->pause();
                 return 'Timer paused';
-            case 'resume':
+            case '--resume':
                 $this->scheduler->resume();
                 return sprintf('Timer resumed. Time left: %s', $this->scheduler->timeLeft());
             default:
