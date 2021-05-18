@@ -1,0 +1,13 @@
+[Unit]
+Description=Scheduler that notifies when the time to smoke comes round again.
+After=syslog.target network.manager
+
+[Service]
+Type=simple
+User=freezemage0
+ExecStart=/usr/bin/smoke-scheduler --daemonize
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

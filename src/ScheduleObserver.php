@@ -5,24 +5,22 @@
 namespace Freezemage\Smoke;
 
 use Freezemage\Config\ConfigInterface;
+use Freezemage\Smoke\Notification\NotificationCollection;
 use Freezemage\Smoke\Socket\Socket;
 
 
 class ScheduleObserver {
     protected $socket;
-    protected $config;
+    protected $notifications;
 
-    public function __construct(Socket $socket, ConfigInterface $config) {
+    public function __construct(Socket $socket, NotificationCollection $notifications) {
         $this->socket = $socket;
-        $this->config = $config;
+        $this->notifications = $notifications;
     }
 
     public function notify(Scheduler $scheduler): void {
         if ($scheduler->isRunning() && $scheduler->timeLeft() <= 0) {
-            $phrases = $this->config->get('notification.phrases');
-            $phraseIndex = rand(0, count($phrases) - 1);
-            
-            $this->socket->write($phrases[$phraseIndex]);
+            $this->socket->write($this->notifications->getRandom());
         }
     }
 }

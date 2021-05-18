@@ -13,6 +13,7 @@
     "php": "^7.2",
     "ext-sockets": "*",
     "ext-pcntl": "*",
-    "freezemage0/config": "^2"
+    "freezemage0/config": "^2",
+    "ext-json": "*"
   }
 }

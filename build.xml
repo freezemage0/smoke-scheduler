@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="smoke-scheduler" default="smoke-scheduler">
+    <target name="cleanup">
+        <delete includeemptydirs="true">
+            <fileset dir="build">
+                <include name="*"/>
+            </fileset>
+        </delete>
+    </target>
+    <target name="build" depends="cleanup">
+        <copy todir="build">
+            <fileset dir=".">
+                <include name="src/**"/>
+                <include name="vendor/**"/>
+                <include name="composer.json"/>
+                <include name="composer.lock"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="smoke-scheduler" depends="build">
+        <pharpackage basedir="build" destfile="build/main.phar" stub="pharstub.php">
+            <fileset dir="build">
+                <include name="*"/>
+            </fileset>
+        </pharpackage>
+    </target>
+</project>

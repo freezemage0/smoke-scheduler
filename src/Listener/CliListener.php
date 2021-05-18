@@ -4,6 +4,7 @@
 namespace Freezemage\Smoke\Listener;
 
 
+use Freezemage\Config\ConfigInterface;
 use Freezemage\Smoke\Scheduler;
 use Freezemage\Smoke\Socket\ListenerInterface;
 use Freezemage\Smoke\Socket\Socket;
@@ -12,10 +13,12 @@ use Freezemage\Smoke\Socket\Socket;
 class CliListener implements ListenerInterface {
     protected $socket;
     protected $scheduler;
+    protected $config;
 
-    public function __construct(Socket $socket, Scheduler $scheduler) {
+    public function __construct(Socket $socket, Scheduler $scheduler, ConfigInterface $config) {
         $this->socket = $socket;
         $this->scheduler = $scheduler;
+        $this->config = $config;
     }
 
     public function getSocket(): Socket {
@@ -23,7 +26,7 @@ class CliListener implements ListenerInterface {
     }
 
     public function handle(Socket $client): void {
-        $data = $client->read(1024);
+        $data = $client->read($this->config->get('server.bufferSize'));
         if ($data == null) {
             return;
         }

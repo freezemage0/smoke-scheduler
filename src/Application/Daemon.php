@@ -4,10 +4,9 @@
 namespace Freezemage\Smoke\Application;
 
 
-use Freezemage\Smoke\Cli\Command\CommandCollection;
-use Freezemage\Smoke\Cli\Command\StartCommand;
 use Freezemage\Smoke\Listener\CliListener;
 use Freezemage\Smoke\Listener\ScheduleListener;
+use Freezemage\Smoke\Notification\NotificationCollection;
 use Freezemage\Smoke\Scheduler;
 use Freezemage\Smoke\Socket\Server;
 use Freezemage\Smoke\Socket\ServerSocketFactory;
@@ -34,12 +33,13 @@ class Daemon extends SchedulerApplication {
                 $this->config->get('server.port')
             ),
             $scheduler,
-            $this->config
+            NotificationCollection::fromConfig($this->config)
         ));
 
         $server->addListener(new CliListener(
             $socketFactory->createUnix($this->config->get('connection.serverName')),
-            $scheduler
+            $scheduler,
+            $this->config
         ));
 
         $this->server = $server;
