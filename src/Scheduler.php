@@ -32,6 +32,10 @@ class Scheduler {
         $this->isRunning = false;
     }
 
+    public function resume(): void {
+        $this->isRunning = true;
+    }
+
     public function isRunning(): bool {
         return $this->isRunning;
     }
@@ -40,11 +44,11 @@ class Scheduler {
         return $this->timeUntil;
     }
 
-    public function iterate(): void {
-        $this->timeUntil -= 1;
-    }
-
     public function update(): void {
+        if ($this->isRunning()) {
+            $this->timeUntil -= 1;
+        }
+
         $queue = new SplQueue();
 
         while (!$this->subscribers->isEmpty()) {

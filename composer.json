@@ -1,12 +1,18 @@
 {
-    "name": "freezemage0/smoke-scheduler",
-    "description": "Smoke scheduler",
-    "type": "library",
-    "license": "proprietary",
-    "minimum-stability": "stable",
-    "autoload": {
-        "psr-4": {
-            "Freezemage\\Smoke\\": "src/"
-        }
+  "name": "freezemage0/smoke-scheduler",
+  "description": "Smoke scheduler",
+  "type": "library",
+  "license": "proprietary",
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Freezemage\\Smoke\\": "src/"
     }
+  },
+  "require": {
+    "php": "^7.2",
+    "ext-sockets": "*",
+    "ext-pcntl": "*",
+    "freezemage0/config": "^2"
+  }
 }

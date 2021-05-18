@@ -14,7 +14,7 @@ class Server {
         $this->listeners = new SplQueue();
     }
 
-    public function addListener(Listener $listener) {
+    public function addListener(ListenerInterface $listener) {
         $this->listeners->enqueue($listener);
     }
 
@@ -22,7 +22,7 @@ class Server {
         $queue = new SplQueue();
 
         while (!$this->listeners->isEmpty()) {
-            /** @var Listener $listener */
+            /** @var ListenerInterface $listener */
             $listener = $this->listeners->dequeue();
             $client = $listener->getSocket()->accept();
 

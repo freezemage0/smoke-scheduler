@@ -1,0 +1,19 @@
+{
+  "server": {
+    "address": "192.168.1.105",
+    "port": 3411,
+    "bufferSize": 1024
+  },
+  "connection": {
+    "serverName": "smoke-scheduler-server",
+    "clientName": "smoke-scheduler-cli"
+  },
+  "notification": {
+    "phrases": [
+      "Sila+suda",
+      "Смолить пора брат...",
+      "Сидишь ждешь да? Красавчик)",
+      "Сходи, развейся, подыши свежим воздухом)"
+    ]
+  }
+}

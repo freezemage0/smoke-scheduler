@@ -22,78 +22,78 @@ class Socket {
         $socket = new Socket();
         $socket->resource = socket_create($protocol, $type, $domain);
 
+        $errno = socket_last_error();
+
+        if ($errno != 0) {
+            throw new SocketException(socket_strerror($errno), $errno);
+        }
+
         return $socket;
     }
 
     public function bind(string $address, int $port = 0): Socket {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
-
+        $this->checkResource();
         socket_bind($this->resource, $address, $port);
+        $this->checkError();
+
         return $this;
     }
 
     public function setBlocking(bool $blocking): Socket {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
+        $this->checkResource();
 
         if ($blocking) {
             socket_set_block($this->resource);
         } else {
             socket_set_nonblock($this->resource);
         }
-
+        $this->checkError();
         return $this;
     }
 
     public function connect(string $address, int $port = 0): Socket {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
-
+        $this->checkResource();
         socket_connect($this->resource, $address, $port);
+        $this->checkError();
+
         return $this;
     }
 
     public function setOption(int $option, $value): Socket {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
-
+        $this->checkResource();
         socket_set_option($this->resource, SOL_SOCKET, $option, $value);
+        $this->checkError();
+
         return $this;
     }
 
     public function listen(): Socket {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
-
+        $this->checkResource();
         socket_listen($this->resource);
+        $this->checkError();
+
         return $this;
     }
 
     public function accept(): ?Socket {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
-
+        $this->checkResource();
         $client = socket_accept($this->resource);
         return ($client != null) ? Socket::fromResource($client) : null;
     }
 
     public function read(int $length): string {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
+        $this->checkResource();
+        $result = socket_read($this->resource, $length);
+
+        if ($result === false) {
+            $this->checkError();
         }
 
-        return socket_read($this->resource, $length);
+        return $result;
     }
 
     public function close(): void {
-        if (empty($this->resource)) {
+        if ($this->isClosed()) {
             return;
         }
 
@@ -102,15 +102,29 @@ class Socket {
     }
 
     public function write(string $data): void {
-        if (empty($this->resource)) {
-            throw new Exception('Missing resource.');
-        }
-
+        $this->checkResource();
         socket_write($this->resource, $data);
+        $this->checkError();
     }
 
     public function isClosed(): bool {
         return empty($this->resource);
+    }
+
+    protected function checkResource(): void {
+        if (empty($this->resource) || get_resource_type($this->resource) != 'Socket') {
+            throw new SocketException('Missing socket resource.');
+        }
+    }
+
+    protected function checkError(): void {
+        $errno = socket_last_error($this->resource);
+
+        if ($errno != 0) {
+            throw new SocketException(socket_strerror($errno), $errno);
+        }
+
+        socket_clear_error($this->resource);
     }
 
     public function __destruct() {

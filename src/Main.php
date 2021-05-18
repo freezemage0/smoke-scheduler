@@ -5,12 +5,34 @@
 namespace Freezemage\Smoke;
 
 
-class Main {
-    public function bootstrap(): void {
+use Freezemage\Config\ConfigFactory;
+use Freezemage\Smoke\Application\Cli;
+use Freezemage\Smoke\Application\Daemon;
+use Freezemage\Smoke\Cli\Argument\Parser;
+use RuntimeException;
 
+
+class Main {
+    public function __construct() {
+        if (strtolower(PHP_OS_FAMILY) != 'linux') {
+            throw new RuntimeException('Unsupported OS.');
+        }
     }
 
     public function run(): void {
+        $parser = new Parser();
+        $argument = $parser->getArgument();
 
+        $factory = new ConfigFactory();
+        $config = $factory->create(__DIR__ . '/config.json');
+
+        if ($argument->getName() == '--daemonize') {
+            $application = new Daemon($config);
+        } else {
+            $application = new Cli($config);
+        }
+
+        $application->bootstrap();
+        $application->run();
     }
 }
