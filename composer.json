@@ -1,0 +1,12 @@
+{
+    "name": "freezemage0/smoke-scheduler",
+    "description": "Smoke scheduler",
+    "type": "library",
+    "license": "proprietary",
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Freezemage\\Smoke\\": "src/"
+        }
+    }
+}
