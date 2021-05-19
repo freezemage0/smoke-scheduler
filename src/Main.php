@@ -24,8 +24,7 @@ class Main {
         $argument = $parser->getArgument();
 
         $factory = new ConfigFactory();
-        $directory = dirname(__DIR__);
-        $config = $factory->create($directory . '/config.json');
+        $config = $factory->create('/var/lib/smoke-scheduler/config.json');
 
         if ($argument->getName() == '--daemonize') {
             $application = new Daemon($config);

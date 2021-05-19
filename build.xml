@@ -20,7 +20,7 @@
     <target name="smoke-scheduler" depends="build">
         <pharpackage basedir="build" destfile="build/main.phar" stub="pharstub.php">
             <fileset dir="build">
-                <include name="*"/>
+                <include name="**"/>
             </fileset>
         </pharpackage>
     </target>

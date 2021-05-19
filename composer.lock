@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8411f26c9fa3661ab0ecf60ea59b3a8d",
+    "content-hash": "204a2d78c6f1c1a7449233e2016e1182",
     "packages": [
         {
             "name": "freezemage0/config",
@@ -176,6 +176,7 @@
     "platform": {
         "php": "^7.2",
         "ext-sockets": "*",
+        "ext-pcntl": "*",
         "ext-json": "*"
     },
     "platform-dev": [],

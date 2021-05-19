@@ -4,7 +4,8 @@ After=syslog.target network.manager
 
 [Service]
 Type=simple
-User=freezemage0
+User=root
+Group=root
 ExecStart=/usr/bin/smoke-scheduler --daemonize
 Restart=always
 RestartSec=30

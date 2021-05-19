@@ -21,6 +21,8 @@ class Daemon extends SchedulerApplication {
      * @var Scheduler
      */
     protected $scheduler;
+    
+    protected $isRunning;
 
     public function bootstrap(): void {
         $server = new Server();
@@ -44,11 +46,22 @@ class Daemon extends SchedulerApplication {
 
         $this->server = $server;
         $this->scheduler = $scheduler;
+        $this->isRunning = true;
     }
 
     public function run(): void {
-        while (true) {
+        pcntl_async_signals(true);
+        $callback = function () {
+            echo 'Shutting down gracefully...' . PHP_EOL;
+            $this->isRunning = false;
+        };
+        
+        pcntl_signal(SIGINT, $callback);
+        pcntl_signal(SIGTERM, $callback);
+        
+        while ($this->isRunning) {
             sleep(1);
+            pcntl_signal_dispatch();
             $this->scheduler->update();
             $this->server->accept();
         }
