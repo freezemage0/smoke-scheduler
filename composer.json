@@ -15,10 +15,10 @@
     "ext-pcntl": "*",
     "freezemage0/config": "^2",
     "ext-json": "*",
-    "phing/phing": "*"
+    "phing/phing": "*",
+    "freezemage0/environment": "*"
   },
   "scripts": {
-    "build-phar": "php vendor/bin/phing -f build.xml",
-    "move-phar": "mkdir -p /var/lib/smoke-scheduler/ && cp build/main.phar /var/lib/smoke-scheduler/"
+    "build-phar": "php vendor/bin/phing -f build.xml"
   }
 }

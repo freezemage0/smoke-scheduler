@@ -14,6 +14,10 @@
                 <include name="vendor/**"/>
                 <include name="composer.json"/>
                 <include name="composer.lock"/>
+                <include name="smoke-scheduler"/>
+                <include name="smoke-scheduler.service"/>
+                <include name="environment.conf"/>
+                <include name="config.json"/>
             </fileset>
         </copy>
     </target>

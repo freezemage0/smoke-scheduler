@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export CONFIG="/etc/smoke-scheduler.d/config.json"
+
+php /usr/local/lib/smoke-scheduler/main.phar "$@"

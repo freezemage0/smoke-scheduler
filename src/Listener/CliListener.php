@@ -60,4 +60,8 @@ class CliListener implements ListenerInterface {
                 return 'Unknown command';
         }
     }
+
+    public function __destruct() {
+        unlink($this->config->get('connection.serverName'));
+    }
 }

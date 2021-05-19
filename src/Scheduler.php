@@ -58,8 +58,10 @@ class Scheduler {
         while (!$this->subscribers->isEmpty()) {
             /** @var ScheduleObserver $subscriber */
             $subscriber = $this->subscribers->dequeue();
-            $subscriber->notify($this);
-            $queue->enqueue($subscriber);
+            if (!$subscriber->hasDisconnected()) {
+                $subscriber->notify($this);
+                $queue->enqueue($subscriber);
+            }
         }
     
         $this->subscribers = $queue;

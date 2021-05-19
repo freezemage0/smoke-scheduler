@@ -6,6 +6,7 @@ namespace Freezemage\Smoke;
 
 
 use Freezemage\Config\ConfigFactory;
+use Freezemage\Environment\Environment;
 use Freezemage\Smoke\Application\Cli;
 use Freezemage\Smoke\Application\Daemon;
 use Freezemage\Smoke\Cli\Argument\Parser;
@@ -23,8 +24,9 @@ class Main {
         $parser = new Parser();
         $argument = $parser->getArgument();
 
+        $environment = new Environment();
         $factory = new ConfigFactory();
-        $config = $factory->create('/var/lib/smoke-scheduler/config.json');
+        $config = $factory->create($environment->get('CONFIG'));
 
         if ($argument->getName() == '--daemonize') {
             $application = new Daemon($config);

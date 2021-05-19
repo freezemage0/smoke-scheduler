@@ -6,9 +6,10 @@ After=syslog.target network.manager
 Type=simple
 User=root
 Group=root
-ExecStart=/usr/bin/smoke-scheduler --daemonize
+ExecStart=/usr/local/bin/smoke-scheduler --daemonize
 Restart=always
 RestartSec=30
+EnvironmentFile=/etc/systemd/system/smoke-scheduler.d/environment.conf
 
 [Install]
 WantedBy=multi-user.target
