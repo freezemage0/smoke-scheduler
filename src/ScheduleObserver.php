@@ -5,8 +5,8 @@
 namespace Freezemage\Smoke;
 
 
-use Freezemage\Config\ConfigInterface;
 use Freezemage\Smoke\Notification\NotificationCollection;
+use Freezemage\Smoke\Scheduler\Task;
 use Freezemage\Smoke\Socket\Socket;
 use Freezemage\Smoke\Socket\SocketException;
 
@@ -20,11 +20,9 @@ class ScheduleObserver {
         $this->notifications = $notifications;
     }
 
-    public function notify(Scheduler $scheduler): void {
+    public function notify(Task $task): void {
         try {
-            if ($scheduler->isRunning() && $scheduler->timeLeft() <= 0) {
-                $this->socket->write($this->notifications->getRandom());
-            }
+            $this->socket->write($task->getDescription());
         } catch (SocketException $exception) {
             echo $exception;
             $this->socket->close();

@@ -18,8 +18,8 @@ class ServerSocketFactory {
 
     public function createUnix(string $address): Socket {
         return Socket::create(AF_UNIX, SOCK_STREAM, 0)
-            ->bind($address)
             ->setOption(SO_REUSEADDR, true)
+            ->bind($address)
             ->setBlocking(false)
             ->listen();
     }

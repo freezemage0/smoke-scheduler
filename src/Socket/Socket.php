@@ -127,7 +127,17 @@ class Socket {
         socket_clear_error($this->resource);
     }
 
+    public function shutdown(int $mode): void {
+        if ($this->isClosed()) {
+            return;
+        }
+
+        socket_shutdown($this->resource, $mode);
+        $this->checkError();
+    }
+
     public function __destruct() {
+        $this->shutdown(2);
         $this->close();
     }
 }

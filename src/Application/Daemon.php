@@ -4,6 +4,7 @@
 namespace Freezemage\Smoke\Application;
 
 
+use Freezemage\Smoke\Cli\CommandFactory;
 use Freezemage\Smoke\Listener\CliListener;
 use Freezemage\Smoke\Listener\ScheduleListener;
 use Freezemage\Smoke\Notification\NotificationCollection;
@@ -26,7 +27,8 @@ class Daemon extends SchedulerApplication {
 
     public function bootstrap(): void {
         $server = new Server();
-        $scheduler = new Scheduler();
+        $notificationCollection = NotificationCollection::fromConfig($this->config);
+        $scheduler = new Scheduler($notificationCollection);
         $socketFactory = new ServerSocketFactory();
 
         $server->addListener(new ScheduleListener(
@@ -35,13 +37,14 @@ class Daemon extends SchedulerApplication {
                 $this->config->get('server.port')
             ),
             $scheduler,
-            NotificationCollection::fromConfig($this->config)
+            $notificationCollection
         ));
 
         $server->addListener(new CliListener(
-            $socketFactory->createUnix($this->config->get('connection.serverName')),
+            $socketFactory->createUnix(sys_get_temp_dir() . '/' . $this->config->get('connection.serverName')),
             $scheduler,
-            $this->config
+            $this->config,
+            new CommandFactory($scheduler)
         ));
 
         $this->server = $server;
@@ -52,7 +55,7 @@ class Daemon extends SchedulerApplication {
     public function run(): void {
         pcntl_async_signals(true);
         $callback = function () {
-            echo 'Shutting down gracefully...' . PHP_EOL;
+            echo 'Shutting down gracefully...' . PHP_EOL . PHP_EOL;
             $this->isRunning = false;
         };
         
@@ -61,9 +64,11 @@ class Daemon extends SchedulerApplication {
         
         while ($this->isRunning) {
             sleep(1);
-            pcntl_signal_dispatch();
             $this->scheduler->update();
             $this->server->accept();
+            pcntl_signal_dispatch();
         }
+
+        exit(0);
     }
 }

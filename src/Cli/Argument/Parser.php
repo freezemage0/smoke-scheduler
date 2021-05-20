@@ -9,24 +9,25 @@ use InvalidArgumentException;
 
 
 class Parser {
-    public const COMMANDS = array('--daemonize', '--start', '--stop', '--pause', '--resume');
-
-    public function getArgument(): Argument {
+    public function getArgumentList(): ArgumentList {
         global $argv;
 
         array_shift($argv); // removing script name from argument list
 
-        if (count($argv) > 2) {
-            throw new ArgumentCountError('Blin ppc...');
+        $arguments = new ArgumentList();
+
+        while (!empty($argv)) {
+            $argument = array_shift($argv);
+            if (strpos($argument, '=') !== false) {
+                list($name, $value) = explode('=', $argument);
+            } else {
+                $name = $argument;
+                $value = null;
+            }
+
+            $arguments->add(new Argument($name, $value));
         }
 
-        $name = array_shift($argv);
-        if (!in_array($name, Parser::COMMANDS)) {
-            throw new InvalidArgumentException('Unknown command.');
-        }
-
-        $value = array_shift($argv);
-
-        return new Argument($name, $value);
+        return $arguments;
     }
 }

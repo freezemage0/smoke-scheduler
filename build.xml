@@ -3,7 +3,7 @@
     <target name="cleanup">
         <delete includeemptydirs="true">
             <fileset dir="build">
-                <include name="*"/>
+                <include name="**"/>
             </fileset>
         </delete>
     </target>

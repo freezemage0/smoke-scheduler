@@ -22,17 +22,19 @@ class Main {
 
     public function run(): void {
         $parser = new Parser();
-        $argument = $parser->getArgument();
+        $argumentList = $parser->getArgumentList();
 
         $environment = new Environment();
         $factory = new ConfigFactory();
         $config = $factory->create($environment->get('CONFIG'));
 
-        if ($argument->getName() == '--daemonize') {
+        $isDaemon = $argumentList->getByName('--daemonize') != null;
+
+        if ($isDaemon) {
             $application = new Daemon($config);
         } else {
             $application = new Cli($config);
-            $application->setArgument($argument);
+            $application->setArgumentList($argumentList);
         }
 
         $application->bootstrap();

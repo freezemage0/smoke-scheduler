@@ -36,4 +36,12 @@ class Server {
 
         $this->listeners = $queue;
     }
+
+    public function __destruct() {
+        while (!$this->listeners->isEmpty()) {
+            /** @var ListenerInterface $listener */
+            $listener = $this->listeners->dequeue();
+            $listener->getSocket()->shutdown(2);
+        }
+    }
 }

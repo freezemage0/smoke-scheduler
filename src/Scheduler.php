@@ -5,65 +5,92 @@
 namespace Freezemage\Smoke;
 
 
+use DateTimeInterface;
+use Freezemage\Smoke\Notification\NotificationCollection;
+use Freezemage\Smoke\Scheduler\Task;
+use SplObjectStorage;
 use SplQueue;
 
 
 class Scheduler {
-    protected $timeUntil;
-    protected $isRunning;
+    protected $id;
+    protected $tasks;
     protected $subscribers;
+    protected $notifications;
 
-    public function __construct() {
-        $this->stop();
+    public function __construct(NotificationCollection $notificationCollection) {
+        $this->id = 0;
         $this->subscribers = new SplQueue();
+        $this->tasks = new SplObjectStorage();
+        $this->notifications = $notificationCollection;
     }
 
-    public function start(int $until): void {
-        $this->timeUntil = $until;
-        $this->isRunning = true;
+    public function createTask(DateTimeInterface $expiresAt, string $description = null): Task {
+        return new Task(
+                ++$this->id,
+                $expiresAt,
+                $description ?? $this->notifications->getRandom()
+        );
     }
 
-    public function stop(): void {
-        $this->timeUntil = 0;
-        $this->isRunning = false;
+    public function start(Task $task): void {
+        $this->tasks->attach($task);
     }
 
-    public function pause(): void {
-        $this->isRunning = false;
+    public function stop(Task $task): void {
+        $this->tasks->detach($task);
     }
 
-    public function resume(): void {
-        $this->isRunning = true;
+    /**
+     * @return Task[]
+     */
+    public function getTasks(): array {
+        $result = array();
+
+        foreach ($this->tasks as $task) {
+            $result[] = $task;
+        }
+
+        return $result;
     }
 
-    public function isRunning(): bool {
-        return $this->isRunning;
-    }
+    public function getTaskById(int $id): ?Task {
+        foreach ($this->tasks as $task) {
+            /** @var Task $task */
+            if ($task->getId() == $id) {
+                return $task;
+            }
+        }
 
-    public function timeLeft(): int {
-        return $this->timeUntil;
+        return null;
     }
 
     public function update(): void {
-        if ($this->timeLeft() <= 0) {
-            $this->stop();
+        foreach ($this->tasks as $task) {
+            /** @var Task $task */
+            if (!$task->isActive()) {
+                continue;
+            }
+
+            if ($task->isFinished()) {
+                $this->notifySubscribers($task);
+                $this->tasks->detach($task);
+            }
         }
-        
-        if ($this->isRunning()) {
-            $this->timeUntil -= 1;
-        }
-    
+    }
+
+    protected function notifySubscribers(Task $task): void {
         $queue = new SplQueue();
-    
+
         while (!$this->subscribers->isEmpty()) {
             /** @var ScheduleObserver $subscriber */
             $subscriber = $this->subscribers->dequeue();
             if (!$subscriber->hasDisconnected()) {
-                $subscriber->notify($this);
+                $subscriber->notify($task);
                 $queue->enqueue($subscriber);
             }
         }
-    
+
         $this->subscribers = $queue;
     }
 

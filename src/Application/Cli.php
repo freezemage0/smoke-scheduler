@@ -5,38 +5,41 @@ namespace Freezemage\Smoke\Application;
 
 
 use Freezemage\Smoke\Cli\Argument\Argument;
+use Freezemage\Smoke\Cli\Argument\ArgumentList;
 use Freezemage\Smoke\Socket\Socket;
 
 
 class Cli extends SchedulerApplication {
-    /** @var Argument */
-    protected $argument;
+    /** @var ArgumentList */
+    protected $argumentList;
     protected $input;
 
     public function bootstrap(): void {
-        $input = array(
-                'command' => $this->argument->getName(),
-                'argument' => $this->argument->getValue()
-        );
+        $arguments = $this->argumentList->getAll();
+        $input = array();
+        foreach ($arguments as $argument) {
+            if ($argument->getName() == '--command') {
+                $input['command'] = $argument->getValue();
+            }
+            $input['arguments'][$argument->getName()] = $argument->getValue();
+        }
         $this->input = json_encode($input);
     }
 
-    public function setArgument(Argument $argument): void {
-        $this->argument = $argument;
+    public function setArgumentList(ArgumentList $argumentList): void {
+        $this->argumentList = $argumentList;
     }
 
     public function run(): void {
         $socket = Socket::create(AF_UNIX, SOCK_STREAM, 0)
-            ->bind($this->config->get('connection.clientName'))
-            ->connect($this->config->get('connection.serverName'));
+            ->connect(sys_get_temp_dir() . '/' . $this->config->get('connection.serverName'));
         
         $socket->write($this->input);
         $response = $socket->read($this->config->get('server.bufferSize'));
 
         echo $response;
         $socket->close();
-        unlink($this->config->get('connection.clientName'));
-        
+
         exit(0);
     }
 }

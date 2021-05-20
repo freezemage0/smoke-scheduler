@@ -5,8 +5,8 @@
     "bufferSize": 1024
   },
   "connection": {
-    "serverName": "/run/smoke-scheduler-server.sock",
-    "clientName": "/run/smoke-scheduler-cli.sock"
+    "serverName": "smoke-scheduler-server.sock",
+    "clientName": "smoke-scheduler-cli.sock"
   },
   "notification": {
     "phrases": [
