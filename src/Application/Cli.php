@@ -24,8 +24,7 @@ class Cli extends SchedulerApplication {
             $input['arguments'][$argument->getName()] = $argument->getValue();
         }
         if (empty($input['command'])) {
-            echo 'No operation provided.';
-            exit(0);
+            $input['command'] = 'list'; // todo: help command
         }
         $this->input = json_encode($input);
     }
