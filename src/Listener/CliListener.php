@@ -53,6 +53,6 @@ class CliListener implements ListenerInterface {
     }
 
     public function __destruct() {
-        unlink(sys_get_temp_dir() . '/' . $this->config->get('connection.serverName'));
+        unlink(sys_get_temp_dir() . '/' . $this->config->get('server.name'));
     }
 }

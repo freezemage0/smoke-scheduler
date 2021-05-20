@@ -2,11 +2,8 @@
   "server": {
     "address": "192.168.1.105",
     "port": 3411,
-    "bufferSize": 1024
-  },
-  "connection": {
-    "serverName": "smoke-scheduler-server.sock",
-    "clientName": "smoke-scheduler-cli.sock"
+    "bufferSize": 1024,
+    "name": "smoke-scheduler-server.sock"
   },
   "notification": {
     "phrases": [

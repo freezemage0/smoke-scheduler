@@ -41,7 +41,7 @@ class Daemon extends SchedulerApplication {
         ));
 
         $server->addListener(new CliListener(
-            $socketFactory->createUnix(sys_get_temp_dir() . '/' . $this->config->get('connection.serverName')),
+            $socketFactory->createUnix(sys_get_temp_dir() . '/' . $this->config->get('server.name')),
             $scheduler,
             $this->config,
             new CommandFactory($scheduler)

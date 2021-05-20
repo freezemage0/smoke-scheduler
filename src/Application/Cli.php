@@ -25,6 +25,7 @@ class Cli extends SchedulerApplication {
         }
         if (empty($input['command'])) {
             $input['command'] = 'list'; // todo: help command
+            $input['arguments'] = array();
         }
         $this->input = json_encode($input);
     }
@@ -35,7 +36,7 @@ class Cli extends SchedulerApplication {
 
     public function run(): void {
         $socket = Socket::create(AF_UNIX, SOCK_STREAM, 0)
-            ->connect(sys_get_temp_dir() . '/' . $this->config->get('connection.serverName'));
+            ->connect(sys_get_temp_dir() . '/' . $this->config->get('server.name'));
         
         $socket->write($this->input);
         $response = $socket->read($this->config->get('server.bufferSize'));
