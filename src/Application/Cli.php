@@ -23,6 +23,10 @@ class Cli extends SchedulerApplication {
             }
             $input['arguments'][$argument->getName()] = $argument->getValue();
         }
+        if (empty($input['command'])) {
+            echo 'No operation provided.';
+            exit(0);
+        }
         $this->input = json_encode($input);
     }
 
