@@ -38,7 +38,6 @@ class CliListener implements ListenerInterface {
         }
 
         $input = json_decode($data, true);
-        var_dump($input);
         $response = $this->processCommand($input);
         $client->write($response . PHP_EOL);
     }

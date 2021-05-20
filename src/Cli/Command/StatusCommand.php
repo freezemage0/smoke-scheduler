@@ -29,6 +29,7 @@ class StatusCommand extends Command {
                 'id' => $task->getId(),
                 'expiresAt' => $task->getExpiresAt()->format('Y-m-d H:i:s'),
                 'description' => $task->getDescription(),
+                'state' => $task->isActive() ? 'active' : 'inactive',
                 'timeLeft' => $this->getTimeLeft($task->getExpiresAt()),
         );
 
