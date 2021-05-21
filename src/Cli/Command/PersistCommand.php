@@ -21,7 +21,6 @@ class PersistCommand extends Command {
         }
 
         $config = $factory->create($filename->getValue());
-        $config->getImporter()->setFilename(''); // Bug in freezemage0/config. Remove after fix.
 
         $tasks = $this->scheduler->getTasks();
 
