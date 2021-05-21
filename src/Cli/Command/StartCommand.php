@@ -36,6 +36,6 @@ class StartCommand extends Command {
         $task = $this->scheduler->createTask($expires, $description);
         $this->scheduler->start($task);
 
-        return $task->toString();
+        return sprintf('Task %s started.', $task->toString());
     }
 }

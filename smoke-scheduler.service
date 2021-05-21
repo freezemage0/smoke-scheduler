@@ -1,6 +1,6 @@
 [Unit]
 Description=Scheduler that notifies when the time to smoke comes round again.
-After=syslog.target network.manager
+After=syslog.target network.target
 
 [Service]
 Type=simple

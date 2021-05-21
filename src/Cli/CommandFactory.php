@@ -9,11 +9,14 @@ use Freezemage\Smoke\Cli\Command\Command;
 use Freezemage\Smoke\Cli\Command\CommandInterface;
 use Freezemage\Smoke\Cli\Command\ListCommand;
 use Freezemage\Smoke\Cli\Command\PauseCommand;
+use Freezemage\Smoke\Cli\Command\PersistCommand;
+use Freezemage\Smoke\Cli\Command\RestoreCommand;
 use Freezemage\Smoke\Cli\Command\ResumeCommand;
 use Freezemage\Smoke\Cli\Command\StartCommand;
 use Freezemage\Smoke\Cli\Command\StatusCommand;
 use Freezemage\Smoke\Cli\Command\StopCommand;
 use Freezemage\Smoke\Cli\Command\UnknownCommand;
+use Freezemage\Smoke\Cli\Command\UpdateCommand;
 use Freezemage\Smoke\Scheduler;
 
 
@@ -48,6 +51,9 @@ class CommandFactory {
                 new PauseCommand($this->scheduler),
                 new ResumeCommand($this->scheduler),
                 new StatusCommand($this->scheduler),
+                new UpdateCommand($this->scheduler),
+                new PersistCommand($this->scheduler),
+                new RestoreCommand($this->scheduler)
         );
     }
 }

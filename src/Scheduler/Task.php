@@ -33,6 +33,18 @@ class Task {
         return $this->description;
     }
 
+    public function setExpiresAt(DateTimeInterface $expiresAt): void {
+        $this->expiresAt = $expiresAt;
+    }
+
+    public function setDescription(string $description): void {
+        $this->description = $description;
+    }
+
+    public function setActive(bool $active): void {
+        $this->active = $active;
+    }
+
     public function activate(): void {
         $this->active = true;
     }

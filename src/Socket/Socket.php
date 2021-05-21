@@ -137,7 +137,6 @@ class Socket {
     }
 
     public function __destruct() {
-        $this->shutdown(2);
         $this->close();
     }
 }

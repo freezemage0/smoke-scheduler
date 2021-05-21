@@ -24,8 +24,10 @@ class Cli extends SchedulerApplication {
             $input['arguments'][$argument->getName()] = $argument->getValue();
         }
         if (empty($input['command'])) {
-            $input['command'] = 'list'; // todo: help command
-            $input['arguments'] = array();
+            $input = array(
+                    'command' => 'list',
+                    'arguments' => array()
+            );
         }
         $this->input = json_encode($input);
     }
