@@ -7,6 +7,7 @@ namespace Freezemage\Smoke;
 
 use Freezemage\Smoke\Notification\NotificationCollection;
 use Freezemage\Smoke\Scheduler\Task;
+use Freezemage\Smoke\Socket\InetAddress;
 use Freezemage\Smoke\Socket\Socket;
 use Freezemage\Smoke\Socket\SocketException;
 
@@ -18,6 +19,10 @@ class ScheduleObserver {
     public function __construct(Socket $socket, NotificationCollection $notifications) {
         $this->socket = $socket;
         $this->notifications = $notifications;
+    }
+
+    public function getClientInfo(): InetAddress {
+        return $this->socket->getPeerInfo();
     }
 
     public function notify(Task $task): void {

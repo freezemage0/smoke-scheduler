@@ -107,6 +107,14 @@ class Socket {
         $this->checkError();
     }
 
+    public function getPeerInfo(): InetAddress {
+        $this->checkResource();
+        socket_getpeername($this->resource, $address, $port);
+        $this->checkError();
+
+        return new InetAddress($address, $port);
+    }
+
     public function isClosed(): bool {
         return empty($this->resource);
     }

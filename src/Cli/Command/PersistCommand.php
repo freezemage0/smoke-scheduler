@@ -10,7 +10,7 @@ use Freezemage\Smoke\Cli\Argument\ArgumentList;
 
 class PersistCommand extends Command {
     public function canProcess(string $command): bool {
-        return $command == 'persist';
+        return $command == 'export';
     }
 
     public function process(ArgumentList $argumentList): string {
@@ -21,7 +21,6 @@ class PersistCommand extends Command {
         }
 
         $config = $factory->create($filename->getValue());
-
         $tasks = $this->scheduler->getTasks();
 
         $exportList = array();

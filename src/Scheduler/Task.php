@@ -41,10 +41,6 @@ class Task {
         $this->description = $description;
     }
 
-    public function setActive(bool $active): void {
-        $this->active = $active;
-    }
-
     public function activate(): void {
         $this->active = true;
     }

@@ -63,7 +63,7 @@ class Daemon extends SchedulerApplication {
         pcntl_signal(SIGTERM, $callback);
         
         while ($this->isRunning) {
-            sleep(1);
+            usleep(10000);
             $this->scheduler->update();
             $this->server->accept();
             pcntl_signal_dispatch();

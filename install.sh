@@ -11,6 +11,5 @@ mkdir -p /var/lib/smoke-scheduler/
 chmod 0755 -R /var/lib/smoke-scheduler/
 chmod +x /usr/local/bin/smoke-scheduler
 
-mv build/environment.conf /etc/systemd/system/smoke-scheduler.d/
 mv build/smoke-scheduler.service /etc/systemd/system/
 systemctl enable smoke-scheduler.service

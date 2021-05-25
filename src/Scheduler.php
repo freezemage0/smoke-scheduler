@@ -97,4 +97,8 @@ class Scheduler {
     public function subscribe(ScheduleObserver $observer): void {
         $this->subscribers->enqueue($observer);
     }
+
+    public function getSubscribers(): SplQueue {
+        return clone $this->subscribers;
+    }
 }

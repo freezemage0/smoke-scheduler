@@ -7,6 +7,7 @@ namespace Freezemage\Smoke\Cli;
 
 use Freezemage\Smoke\Cli\Command\Command;
 use Freezemage\Smoke\Cli\Command\CommandInterface;
+use Freezemage\Smoke\Cli\Command\ConnectionsCommand;
 use Freezemage\Smoke\Cli\Command\ListCommand;
 use Freezemage\Smoke\Cli\Command\PauseCommand;
 use Freezemage\Smoke\Cli\Command\PersistCommand;
@@ -53,7 +54,8 @@ class CommandFactory {
                 new StatusCommand($this->scheduler),
                 new UpdateCommand($this->scheduler),
                 new PersistCommand($this->scheduler),
-                new RestoreCommand($this->scheduler)
+                new RestoreCommand($this->scheduler),
+                new ConnectionsCommand($this->scheduler)
         );
     }
 }
