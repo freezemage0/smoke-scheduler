@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "string",
+    "token": ["string", "null"],
+    "parameters": [
+      {
+        "name": "string",
+        "value": "string"
+      }
+    ]
+  }
+}

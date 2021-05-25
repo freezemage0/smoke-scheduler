@@ -1,0 +1,7 @@
+{
+  "response": {
+    "code": "int",
+    "body": "string",
+    "callId": "string"
+  }
+}
