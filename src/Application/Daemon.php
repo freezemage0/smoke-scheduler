@@ -62,6 +62,7 @@ class Daemon extends SchedulerApplication {
             usleep(10000);
             $this->scheduler->update();
             $this->server->accept();
+            $this->server->handle();
             pcntl_signal_dispatch();
         }
 
