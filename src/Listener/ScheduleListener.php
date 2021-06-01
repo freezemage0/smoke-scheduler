@@ -4,7 +4,6 @@
 namespace Freezemage\Smoke\Listener;
 
 
-use Freezemage\Config\ConfigInterface;
 use Freezemage\Smoke\Notification\NotificationCollection;
 use Freezemage\Smoke\ScheduleObserver;
 use Freezemage\Smoke\Scheduler;

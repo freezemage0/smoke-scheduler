@@ -8,6 +8,7 @@ use Freezemage\Smoke\Cli\CommandFactory;
 use Freezemage\Smoke\Listener\CliListener;
 use Freezemage\Smoke\Listener\ScheduleListener;
 use Freezemage\Smoke\Notification\NotificationCollection;
+use Freezemage\Smoke\Queue\Listener;
 use Freezemage\Smoke\Scheduler;
 use Freezemage\Smoke\Socket\Server;
 use Freezemage\Smoke\Socket\ServerSocketFactory;
@@ -31,20 +32,15 @@ class Daemon extends SchedulerApplication {
         $scheduler = new Scheduler($notificationCollection);
         $socketFactory = new ServerSocketFactory();
 
-        $server->addListener(new ScheduleListener(
+        $server->addListener(new Listener(
             $socketFactory->createTcp(
                 $this->config->get('server.address'),
                 $this->config->get('server.port')
-            ),
-            $scheduler,
-            $notificationCollection
+            )
         ));
 
-        $server->addListener(new CliListener(
+        $server->addListener(new Listener(
             $socketFactory->createUnix(sys_get_temp_dir() . '/' . $this->config->get('server.name')),
-            $scheduler,
-            $this->config,
-            new CommandFactory($scheduler)
         ));
 
         $this->server = $server;

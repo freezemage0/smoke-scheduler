@@ -9,7 +9,7 @@ class InetAddress {
     protected $address;
     protected $port;
 
-    public function __construct(string $address, int $port) {
+    public function __construct(string $address, int $port = 0) {
         $this->address = $address;
         $this->port = $port;
     }
