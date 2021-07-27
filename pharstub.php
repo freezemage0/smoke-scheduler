@@ -1,6 +1,5 @@
 <?php
 
-
 use Freezemage\Smoke\Main;
 
 

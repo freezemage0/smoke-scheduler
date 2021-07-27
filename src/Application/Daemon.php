@@ -4,9 +4,14 @@
 namespace Freezemage\Smoke\Application;
 
 
+use DateInterval;
+use DateTime;
+use Freezemage\Smoke\AutoAssignment\Config;
+use Freezemage\Smoke\AutoAssignment\Observer;
 use Freezemage\Smoke\Cli\CommandFactory;
 use Freezemage\Smoke\Listener\CliListener;
 use Freezemage\Smoke\Listener\ScheduleListener;
+use Freezemage\Smoke\Listener\WelcomeListener;
 use Freezemage\Smoke\Notification\NotificationCollection;
 use Freezemage\Smoke\Scheduler;
 use Freezemage\Smoke\Socket\Server;
@@ -31,21 +36,43 @@ class Daemon extends SchedulerApplication {
         $scheduler = new Scheduler($notificationCollection);
         $socketFactory = new ServerSocketFactory();
 
-        $server->addListener(new ScheduleListener(
-            $socketFactory->createTcp(
+        $serverSocket = $socketFactory->createTcp(
                 $this->config->get('server.address'),
                 $this->config->get('server.port')
-            ),
-            $scheduler,
-            $notificationCollection
+        );
+
+        $server->addListener(new ScheduleListener(
+                $serverSocket,
+                $scheduler,
+                $notificationCollection
+        ));
+        $server->addListener(new CliListener(
+                $socketFactory->createUnix(sys_get_temp_dir() . '/' . $this->config->get('server.name')),
+                $scheduler,
+                $this->config,
+                new CommandFactory($scheduler)
         ));
 
-        $server->addListener(new CliListener(
-            $socketFactory->createUnix(sys_get_temp_dir() . '/' . $this->config->get('server.name')),
-            $scheduler,
-            $this->config,
-            new CommandFactory($scheduler)
-        ));
+        $config = new Config(
+            $this->config->get('autoAssignment.enabled'),
+            $this->config->get('autoAssignment.expiresIn')
+        );
+        $scheduler->subscribe(new Observer($config, $scheduler));
+
+        $presets = $this->config->get('presets', array());
+        $currentTime = new DateTime();
+
+        foreach ($presets as $preset) {
+            $expires = DateTime::createFromFormat('H:i:s', $preset['expiresAt']);
+            if ($currentTime->getTimestamp() >= $expires->getTimestamp()) {
+                continue;
+            }
+
+            $scheduler->createTask(
+                    $expires,
+                    $preset['description'] ?? null
+            );
+        }
 
         $this->server = $server;
         $this->scheduler = $scheduler;

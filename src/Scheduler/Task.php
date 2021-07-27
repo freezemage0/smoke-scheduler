@@ -13,9 +13,11 @@ class Task {
     protected $expiresAt;
     protected $description;
     protected $active;
+    protected $since;
 
     public function __construct(int $id, DateTimeInterface $expiresAt, string $description) {
         $this->id = $id;
+        $this->since = new DateTime();
         $this->expiresAt = $expiresAt;
         $this->description = $description;
         $this->active = true;
@@ -23,6 +25,10 @@ class Task {
 
     public function getId(): int {
         return $this->id;
+    }
+
+    public function getSince(): DateTime {
+        return $this->since;
     }
 
     public function getExpiresAt(): DateTimeInterface {

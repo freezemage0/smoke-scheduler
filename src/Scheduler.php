@@ -6,8 +6,11 @@ namespace Freezemage\Smoke;
 
 
 use DateTimeInterface;
+use Freezemage\Config\ConfigFactory;
+use Freezemage\Environment\Environment;
 use Freezemage\Smoke\Notification\NotificationCollection;
 use Freezemage\Smoke\Scheduler\Task;
+use Freezemage\Smoke\Scheduler\TaskLogger;
 use SplObjectStorage;
 use SplQueue;
 
@@ -17,20 +20,26 @@ class Scheduler {
     protected $tasks;
     protected $subscribers;
     protected $notifications;
+    protected $logger;
 
     public function __construct(NotificationCollection $notificationCollection) {
         $this->id = 0;
         $this->subscribers = new SplQueue();
         $this->tasks = new SplObjectStorage();
         $this->notifications = $notificationCollection;
+        $this->logger = new TaskLogger();
     }
 
     public function createTask(DateTimeInterface $expiresAt, string $description = null): Task {
-        return new Task(
+        $task = new Task(
                 ++$this->id,
                 $expiresAt,
                 $description ?? $this->notifications->getRandom()
         );
+
+        $this->logger->store($task);
+
+        return $task;
     }
 
     public function start(Task $task): void {
@@ -65,6 +74,10 @@ class Scheduler {
         return null;
     }
 
+    public function getLogger(): TaskLogger {
+        return $this->logger;
+    }
+
     public function update(): void {
         foreach ($this->tasks as $task) {
             /** @var Task $task */
@@ -74,6 +87,7 @@ class Scheduler {
 
             if ($task->isFinished()) {
                 $this->notifySubscribers($task);
+                $task->deactivate();
                 $this->tasks->detach($task);
             }
         }
@@ -94,7 +108,7 @@ class Scheduler {
         $this->subscribers = $queue;
     }
 
-    public function subscribe(ScheduleObserver $observer): void {
+    public function subscribe(ObserverInterface $observer): void {
         $this->subscribers->enqueue($observer);
     }
 

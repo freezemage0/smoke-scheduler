@@ -16,6 +16,9 @@ class Parser {
 
         $arguments = new ArgumentList();
 
+        $command = count($argv) > 0 ? array_shift($argv) : 'list';
+        $arguments->add(new Argument('command', $command));
+
         while (!empty($argv)) {
             $argument = array_shift($argv);
             if (strpos($argument, '=') !== false) {

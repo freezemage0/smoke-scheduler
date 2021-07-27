@@ -12,7 +12,7 @@ use Freezemage\Smoke\Socket\Socket;
 use Freezemage\Smoke\Socket\SocketException;
 
 
-class ScheduleObserver {
+class ScheduleObserver implements ObserverInterface {
     protected $socket;
     protected $notifications;
 

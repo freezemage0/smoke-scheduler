@@ -28,7 +28,7 @@ class Main {
         $factory = new ConfigFactory();
         $config = $factory->create($environment->get('CONFIG'));
 
-        $isDaemon = $argumentList->getByName('--daemonize') != null;
+        $isDaemon = $argumentList->getByName('command')->getValue() == 'daemonize';
 
         if ($isDaemon) {
             $application = new Daemon($config);

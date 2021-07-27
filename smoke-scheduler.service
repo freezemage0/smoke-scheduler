@@ -6,7 +6,7 @@ After=syslog.target network.target
 Type=simple
 User=demyanseleznev
 Group=demyanseleznev
-ExecStart=/usr/local/bin/smoke-scheduler --daemonize
+ExecStart=/usr/local/bin/smoke-scheduler daemonize
 Restart=always
 RestartSec=30
 

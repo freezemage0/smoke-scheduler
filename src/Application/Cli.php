@@ -18,7 +18,7 @@ class Cli extends SchedulerApplication {
         $arguments = $this->argumentList->getAll();
         $input = array();
         foreach ($arguments as $argument) {
-            if ($argument->getName() == '--command') {
+            if ($argument->getName() == 'command') {
                 $input['command'] = $argument->getValue();
             }
             $input['arguments'][$argument->getName()] = $argument->getValue();
@@ -37,13 +37,21 @@ class Cli extends SchedulerApplication {
     }
 
     public function run(): void {
+        $str = sys_get_temp_dir() . '/' . $this->config->get('server.name');
         $socket = Socket::create(AF_UNIX, SOCK_STREAM, 0)
-            ->connect(sys_get_temp_dir() . '/' . $this->config->get('server.name'));
+                        ->connect($str);
         
         $socket->write($this->input);
-        $response = $socket->read($this->config->get('server.bufferSize'));
+        $length = $this->config->get('server.bufferSize');
 
-        echo $response;
+        $response = array();
+
+        do {
+            $part = $socket->read($length);
+            $response[] = $part;
+        } while(!empty($part) || empty($response));
+
+        echo implode('', $response);
         $socket->close();
 
         exit(0);
